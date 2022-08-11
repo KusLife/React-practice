@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-// import ClassCounter from './componemts/ClassCounter';
-// import Counter from './componemts/Counter';
-// import PostItem from './componemts/PostItem';
+import { useRef } from 'react';
 import PostList from './componemts/PostList';
+import MyBtn from './componemts/UI/Buttons/MyBtn';
+import MyInput from './componemts/UI/Input/MyInput';
 import './styles/App.css';
 
 function App() {
@@ -11,21 +11,35 @@ function App() {
     { id: 2, title: 'JavaScript', body: 'Discription' },
     { id: 3, title: 'JavaScript', body: 'Discription' },
   ]);
-  let [posts2, setPosts2] = useState([
-    { id: 1, title: 'Python', body: 'Discription' },
-    { id: 2, title: 'Python', body: 'Discription' },
-    { id: 3, title: 'Python', body: 'Discription' },
-  ]);
+
+  let [title, setTitle] = useState('');
+
+  const bodyInputRef = useRef();
+
+  const addNewPost = (e) => {
+    //get DOM element with useState
+    console.log(title);
+
+    //get DOM element with useRef
+    console.log(bodyInputRef.current.value);
+  };
 
   return (
     <div className="App">
-      {/* <Counter />
-      <ClassCounter/> */}
+      <MyInput
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        type="text"
+        placeholder="Somthing"
+      />
+      
+      <MyInput ref={bodyInputRef} type="text" placeholder="Somthing second" />
 
-      {/* <PostItem post={post}/> */}
+      {/* <input ref={bodyInputRef} type="text" placeholder="Somthing third" /> */}
 
-      <PostList posts={posts} title={'Java script posts list'}/>
-      <PostList posts={posts2} title={'Python posts list'}/>
+      <MyBtn onClick={addNewPost}>POST</MyBtn>
+
+      <PostList posts={posts} title={'Java script posts list'} />
     </div>
   );
 }
