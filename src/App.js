@@ -1,50 +1,62 @@
 import React, { useState } from 'react';
+import PostForm from './componemts/PostForm';
 import PostList from './componemts/PostList';
-import MyBtn from './componemts/UI/Buttons/MyBtn';
-import MyInput from './componemts/UI/Input/MyInput';
+import MySelect from './componemts/UI/Select/MySelect';
 import './styles/App.css';
 
 function App() {
   let [posts, setPosts] = useState([
-    { id: 1, title: 'JavaScript', body: 'Discription' },
-    { id: 2, title: 'JavaScript', body: 'Discription' },
-    { id: 3, title: 'JavaScript', body: 'Discription' },
+    { id: 1, title: 'JavaScript', body: 'The most used' },
+    { id: 2, title: 'Phyton', body: 'Esear to understand' },
+    { id: 3, title: 'C++', body: 'I have no clue' },
   ]);
 
-  let [title, setTitle] = useState('');
-  let [body, setBody] = useState('');
+  let [selectedSort, setSelectedSort] = useState('');
+  
+  // callback which gets event values and sets to the local state
+  const sortPosts = (sort) => {
+    setSelectedSort(sort);
+    // method 'sort' mutate the object so to prevent it we made an array
+    // method 'localCompare' is 
+    setPosts([...posts].sort((a,b) => a[sort].localeCompare(b[sort])))
+  };
 
-  const addNewPost = () => {
-    const newPost = {
-      title,
-      body,
-    };
+  // callback which gets new posts and sets to the local state
+  const newPost = (postItem) => {
+    setPosts([...posts, postItem]);
+  };
 
-    setPosts([...posts, newPost])
-    setTitle('')
-    setBody('')
-
+  // callback which delete posts from the local state
+  const removePost = (post) => {
+    setPosts(posts.filter((p) => p.id !== post.id));
   };
 
   return (
     <div className="App">
-      <MyInput
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        type="text"
-        placeholder="Title"
-      />
-
-      <MyInput
-        value={body}
-        onChange={(e) => setBody(e.target.value)}
-        type="text"
-        placeholder="Somthing second"
-      />
-
-      <MyBtn onClick={addNewPost}>POST</MyBtn>
-
-      <PostList posts={posts} title={'Java script posts list'} />
+      <PostForm addPost={newPost} />
+      <div>
+        <hr style={{ margin: '15px 0px' }} />
+        <MySelect
+          value={selectedSort}
+          onChange={sortPosts}
+          defaultValue="Sort"
+          options={[
+            { value: 'title', name: 'By name' },
+            { value: 'body', name: 'By discription' },
+          ]}
+        />
+      </div>
+      {posts.length ? (
+        <PostList
+          removePost={removePost}
+          posts={posts}
+          title={'Java script posts list'}
+        />
+      ) : (
+        <div>
+          <h1 className="noPosts">No posts!</h1>
+        </div>
+      )}
     </div>
   );
 }
