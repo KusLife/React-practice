@@ -1,8 +1,9 @@
 import React, { useMemo, useState } from 'react';
+import PostFilter from './componemts/PostFilter';
 import PostForm from './componemts/PostForm';
 import PostList from './componemts/PostList';
-import MyInput from './componemts/UI/Input/MyInput';
-import MySelect from './componemts/UI/Select/MySelect';
+import MyBtn from './componemts/UI/Buttons/MyBtn';
+import MyModal from './componemts/UI/Modal/MyModal';
 import './styles/App.css';
 
 function App() {
@@ -12,35 +13,33 @@ function App() {
     { id: 3, title: 'C++', body: 'I have no clue' },
   ]);
 
-  let [selectedSort, setSelectedSort] = useState('');
-  let [searchQuery, setSearchQuery] = useState('');
-
-  // callback which gets event values and sets to the local state
-  const sortPosts = (sort) => {
-    setSelectedSort(sort);
-  };
+  let [filter, setFilter] = useState({ sort: '', query: '' });
+  let [modal, setModal] = useState(false);
 
   // callback which gets new posts and sets to the local state
   const newPost = (postItem) => {
     setPosts([...posts, postItem]);
+    setModal(false)
   };
 
-  // to prevent extra rerendering we use hook 'useMemo'
+  // to prevent extra rerendering we use a hook 'useMemo'
   // method 'sort' mutate the object so to prevent it we made an array
   // method 'localCompare' is used to compare strings, in our case in the callback
   const sortedPosts = useMemo(() => {
     console.log('Function sorted posts worked');
-    if (selectedSort) {
+    if (filter.sort) {
       return [...posts].sort((a, b) =>
-        a[selectedSort].localeCompare(b[selectedSort])
+        a[filter.sort].localeCompare(b[filter.sort])
       );
     }
     return posts;
-  }, [posts, selectedSort]);
+  }, [posts, filter.sort]);
 
   const searchedAndSortedPosts = useMemo(() => {
-    return sortedPosts.filter((posts) => posts.title.toLowerCase().includes(searchQuery.toLowerCase()))
-  }, [sortedPosts, searchQuery])
+    return sortedPosts.filter((posts) =>
+      posts.title.toLowerCase().includes(filter.query.toLowerCase())
+    );
+  }, [sortedPosts, filter.query]);
 
   // callback which delete posts from the local state
   const removePost = (post) => {
@@ -49,35 +48,20 @@ function App() {
 
   return (
     <div className="App">
-      <PostForm addPost={newPost} />
+
+      <MyBtn style={{marginTop: '25px'}} onClick={() => setModal(true)}>Create post</MyBtn>
+      <MyModal visible={modal} setVisible={setModal}>
+        <PostForm addPost={newPost}/>
+      </MyModal>
+
       <hr style={{ margin: '15px 0px' }} />
-      <div>
-        <MyInput
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search"
-        />
-        <MySelect
-          value={selectedSort}
-          onChange={sortPosts}
-          defaultValue="Sort"
-          options={[
-            { value: 'title', name: 'By name' },
-            { value: 'body', name: 'By discription' },
-          ]}
-        />
-      </div>
-      {searchedAndSortedPosts.length ? (
-        <PostList
-          removePost={removePost}
-          posts={searchedAndSortedPosts}
-          title={'Programming languages posts list'}
-        />
-      ) : (
-        <div>
-          <h1 className="noPosts">No posts!</h1>
-        </div>
-      )}
+      <PostFilter filter={filter} setFilter={setFilter} />
+
+      <PostList
+        removePost={removePost}
+        posts={searchedAndSortedPosts}
+        title={'Programming languages posts list'}
+      />
     </div>
   );
 }

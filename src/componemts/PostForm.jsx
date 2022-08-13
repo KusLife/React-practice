@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import MyBtn from '../componemts/UI/Buttons/MyBtn';
 import MyInput from '../componemts/UI/Input/MyInput';
 
-function PostForm({ addPost }) {
+function PostForm({ addPost, setVisible }) {
   let [post, setPost] = useState({ title: '', body: '' });
 
   const addNewPost = (e) => {
     e.preventDefault()
     addPost({ ...post, id: Date.now() });
     setPost({ title: '', body: '' })
+    
   };
 
   return (
