@@ -6,7 +6,7 @@ const PostList = ({ posts, title, removePost }) => {
     <div>
       <h1 className="posts__title">{title}</h1>
       {posts.map((post, index) => (
-        <div>{<PostItem removePost={removePost} number={index+1} key={post.id} post={post} />}</div>
+        <div>{<PostItem key={post.id} removePost={removePost} number={index+1} post={post} />}</div>
       ))}
     </div>
   );

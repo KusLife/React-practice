@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import PostForm from './componemts/PostForm';
 import PostList from './componemts/PostList';
+import MyInput from './componemts/UI/Input/MyInput';
 import MySelect from './componemts/UI/Select/MySelect';
 import './styles/App.css';
 
@@ -12,19 +13,34 @@ function App() {
   ]);
 
   let [selectedSort, setSelectedSort] = useState('');
-  
+  let [searchQuery, setSearchQuery] = useState('');
+
   // callback which gets event values and sets to the local state
   const sortPosts = (sort) => {
     setSelectedSort(sort);
-    // method 'sort' mutate the object so to prevent it we made an array
-    // method 'localCompare' is 
-    setPosts([...posts].sort((a,b) => a[sort].localeCompare(b[sort])))
   };
 
   // callback which gets new posts and sets to the local state
   const newPost = (postItem) => {
     setPosts([...posts, postItem]);
   };
+
+  // to prevent extra rerendering we use hook 'useMemo'
+  // method 'sort' mutate the object so to prevent it we made an array
+  // method 'localCompare' is used to compare strings, in our case in the callback
+  const sortedPosts = useMemo(() => {
+    console.log('Function sorted posts worked');
+    if (selectedSort) {
+      return [...posts].sort((a, b) =>
+        a[selectedSort].localeCompare(b[selectedSort])
+      );
+    }
+    return posts;
+  }, [posts, selectedSort]);
+
+  const searchedAndSortedPosts = useMemo(() => {
+    return sortedPosts.filter((posts) => posts.title.toLowerCase().includes(searchQuery.toLowerCase()))
+  }, [sortedPosts, searchQuery])
 
   // callback which delete posts from the local state
   const removePost = (post) => {
@@ -34,8 +50,13 @@ function App() {
   return (
     <div className="App">
       <PostForm addPost={newPost} />
+      <hr style={{ margin: '15px 0px' }} />
       <div>
-        <hr style={{ margin: '15px 0px' }} />
+        <MyInput
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search"
+        />
         <MySelect
           value={selectedSort}
           onChange={sortPosts}
@@ -46,11 +67,11 @@ function App() {
           ]}
         />
       </div>
-      {posts.length ? (
+      {searchedAndSortedPosts.length ? (
         <PostList
           removePost={removePost}
-          posts={posts}
-          title={'Java script posts list'}
+          posts={searchedAndSortedPosts}
+          title={'Programming languages posts list'}
         />
       ) : (
         <div>
