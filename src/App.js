@@ -6,28 +6,29 @@ import PostList from './componemts/PostList';
 import MyBtn from './componemts/UI/Buttons/MyBtn';
 import MyModal from './componemts/UI/Modal/MyModal';
 import './styles/App.css';
-import axios from 'axios';
 import PostService from './API/PostService';
 import Loader from './componemts/UI/Loader/Loader';
 import { useFetching } from './componemts/Hooks/useFetching';
-import { getPagesCount } from './utils/getTotalPages';
+import { getPagesArreyCounter, getPagesCount } from './utils/getPagesCount';
 
 function App() {
   const [posts, setPosts] = useState([]);
   const [filter, setFilter] = useState({ sort: '', query: '' });
   const [modal, setModal] = useState(false);
   const searchedAndSortedPosts = usePosts(posts, filter.sort, filter.query);
-  const [totalPages, setTotalPages] = useState(0)
-  const [limit, setLimit] = useState(10)
-  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(0);
+  const pagesArrey = getPagesArreyCounter(totalPages);
+  const [limit, setLimit] = useState(10);
+  const [page, setPage] = useState(1);
   const [fetchPosts, isPostLoading, errorPost] = useFetching(async () => {
     const response = await PostService.getAll(limit, page);
     setPosts(response.data);
-    const totalCount = response.headers['x-total-count']
-    setTotalPages(getPagesCount(totalCount, limit))
-    
+    const totalCount = response.headers['x-total-count'];
+    setTotalPages(getPagesCount(totalCount, limit));
   });
-  console.log(totalPages)
+
+  // console.log(totalPages)
+  console.log(pagesArrey);
   // callback which gets new posts and sets to the local state
   const newPost = (postItem) => {
     setPosts([...posts, postItem]);
@@ -39,9 +40,14 @@ function App() {
     setPosts(posts.filter((p) => p.id !== post.id));
   };
 
+  const changePage = (p) => {
+        setPage(p)
+        fetchPosts()
+  }
+
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [page]);
 
   return (
     <div className="App">
@@ -56,6 +62,17 @@ function App() {
       <PostFilter filter={filter} setFilter={setFilter} />
 
       {errorPost && <h1> Ooooops! {errorPost}</h1>}
+
+      <div className="page__wrapper">
+        {pagesArrey.map((p) => (
+          <span 
+          onClick={() => changePage(p)}
+          key={p}
+          className={page === p ? 'page page__current' : 'page'}>
+            {p}
+          </span>
+        ))}
+      </div>
 
       {isPostLoading ? (
         <div
