@@ -6,7 +6,8 @@
 
 #root {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
 
 .App {
@@ -45,6 +46,10 @@
   transition: all 500ms ease-in;
 }
 
+.post__btns {
+  display: flex;
+}
+
 
 .page__wrapper {
     display: flex;
@@ -60,4 +65,21 @@
 .page__current {
   border: 3px orange solid ;
   font-weight: bold;
+}
+
+.navbar {
+  /* width: 100vw; */
+  height: 50px;
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+  background: lightgrey;
+}
+
+.navbar__links {
+  margin-left: auto;
+}
+
+.error {
+  color: red;
 }

@@ -24,7 +24,7 @@ function PostForm({ addPost }) {
         value={post.body}
         onChange={(e) => setPost({ ...post, body: e.target.value })}
         type="text"
-        placeholder="Disctiption"
+        placeholder="Discription"
       />
 
       <MyBtn onClick={addNewPost}>POST</MyBtn>
