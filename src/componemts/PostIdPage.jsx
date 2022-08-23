@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import PostService from '../API/PostService';
-import { useFetching } from './Hooks/useFetching';
+import { useFetching } from '../Hooks/useFetching';
 import Loader from './UI/Loader/Loader';
 
 function PostIdPage() {
@@ -35,7 +35,7 @@ function PostIdPage() {
         <Loader />
       ) : (
         comments.map((comm) => (
-          <div style={{marginTop: 15}}>
+          <div key={comm.id} style={{marginTop: 15}}>
             <h4>From: {comm.name}</h4>
             <h5>{comm.email}</h5>
             <div>{comm.body}</div>

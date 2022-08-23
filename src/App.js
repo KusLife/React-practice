@@ -1,18 +1,29 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import './styles/App.css';
-import About from './pages/About';
-import Posts from './pages/Posts';
 import Navbar from './componemts/UI/Navbar/Navbar';
-import Error from './pages/Error';
 import AppPosts from './pages/AppPosts';
+import { AuthContex } from './context';
 
 const App = () => {
+  const [isAuth, setIsAuth] = useState(false);
+
+  useEffect(() => {
+    if (localStorage.getItem('auth')) {
+      setIsAuth(true);
+    }
+  }, []);
+
   return (
     <div className="App">
-      <Navbar />
-
-     <AppPosts/>
+      <AuthContex.Provider
+        value={{
+          isAuth,
+          setIsAuth,
+        }}
+      >
+        <Navbar />
+        <AppPosts />
+      </AuthContex.Provider>
     </div>
   );
 };

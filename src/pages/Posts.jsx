@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PostService from '../API/PostService';
-import { useFetching } from '../componemts/Hooks/useFetching';
-import { usePosts } from '../componemts/Hooks/usePosts';
+import { useFetching } from '../Hooks/useFetching';
+import { usePosts } from '../Hooks/usePosts';
 import PostFilter from '../componemts/PostFilter';
 import PostForm from '../componemts/PostForm';
 import PostList from '../componemts/PostList';
