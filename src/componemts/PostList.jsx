@@ -8,7 +8,7 @@ const PostList = ({ posts, title, removePost }) => {
   }
 
   return (
-    <div>
+    <div className='posts'>
       <h1 className="posts__title">{title}</h1>
 
       <TransitionGroup>
